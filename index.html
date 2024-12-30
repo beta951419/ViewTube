@@ -1,10 +1,12 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Viewer</title>
+    <title>Viewtube</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -12,118 +14,104 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f9f9f9;
+            background-color: #f0f0f0;
             color: #333;
-            transition: background-color 0.3s, color 0.3s;
         }
         .container {
             text-align: center;
-            max-width: 800px;
+            max-width: 1000px; 
+            height: 68%;
             padding: 20px;
-            background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
         }
         iframe {
             width: 100%;
-            height: 450px;
+            height: 60%;
             border: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .input-group {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: 15px;
         }
         input {
-            width: 70%;
-            padding: 12px;
+            width: 75%;
+            padding: 8px;
             font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            border-color: #007bff;
-            outline: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         button {
-            padding: 12px 20px;
+            padding: 8px 16px;
             font-size: 16px;
+            margin-top: 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-            color: #fff;
         }
         .theme-toggle {
-            background: transparent;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.3s;
+            margin-top: 20px;
+            padding: 8px;
+            background-color: #007bff;
+            color: #fff;
         }
-        .theme-toggle:hover {
-            transform: rotate(20deg);
+        .language-toggle {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #28a745;
+            color: #fff;
         }
-        .theme-toggle i {
-            color: #333;
-            transition: color 0.3s;
-        }
-        .dark-mode {
+
+        /* Dark Mode Specific Styling */
+        body.dark-mode {
             background-color: #333;
-            color: #f9f9f9;
+            color: #fff;
         }
-        .dark-mode input {
+
+        .container.dark-mode {
             background-color: #444;
-            color: #f9f9f9;
-            border-color: #555;
         }
-        .dark-mode input:focus {
-            border-color: #66b2ff;
+
+        /* Specific styles for h1 in both light and dark modes */
+        h1 {
+            color: #333;
         }
-        .dark-mode button {
-            background-color: #444;
-            color: #f9f9f9;
-        }
-        .dark-mode button:hover {
-            background-color: #666;
-        }
-        .dark-mode .theme-toggle i {
-            color: #f9f9f9;
+
+        .dark-mode h1 {
+            color: #fff;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
-        <h1>YouTube Viewer</h1>
+        <h1 id="title">ViewTube</h1>
         <div class="input-group">
             <input type="text" id="youtubeLink" placeholder="Paste YouTube link here...">
-            <button onclick="loadVideo()">Load Video</button>
+            <button onclick="loadVideo()" id="loadButton">Load Video</button>
         </div>
-        <iframe id="videoFrame" src="https://www.youtube.com/embed/R5Ijp3dM6Hs" allowfullscreen=""></iframe>
-        <div style="margin-top: 20px;">
-            <button onclick="copyLink()">Copy Link</button>
-            <button onclick="generateDataURI()">Generate Data URI</button>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
-        </button>
+        <iframe id="videoFrame" src="" allowfullscreen></iframe>
+        <button onclick="copyLink()" id="copyButton">Copy Link</button>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">Switch Theme</button>
+        <button onclick="generateDataURI()" id="dataUriButton">Generate Data URI</button>
+        <button class="language-toggle" onclick="toggleLanguage()" id="languageToggle">Switch Language</button>
     </div>
+
     <script>
         const videoFrame = document.getElementById('videoFrame');
         const youtubeLink = document.getElementById('youtubeLink');
         const body = document.body;
-        const themeToggle = document.querySelector('.theme-toggle i');
+        const container = document.querySelector('.container');
+
+        // Load saved theme from localStorage
+        window.onload = function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+            // Set language
+            const savedLanguage = localStorage.getItem('language') || 'en';
+            setLanguage(savedLanguage);
+        };
 
         function loadVideo() {
             const url = youtubeLink.value;
@@ -149,8 +137,20 @@
         }
 
         function toggleTheme() {
-            const isDark = body.classList.toggle('dark-mode');
-            themeToggle.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            const isDark = body.classList.contains('dark-mode');
+            const newTheme = isDark ? 'light' : 'dark';
+            setTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                container.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+                container.classList.remove('dark-mode');
+            }
         }
 
         function generateDataURI() {
@@ -165,7 +165,42 @@
             a.click();
             document.body.removeChild(a);
         }
+
+        function toggleLanguage() {
+            const currentLang = localStorage.getItem('language') || 'en';
+            const newLang = currentLang === 'en' ? 'jp' : 'en';
+            localStorage.setItem('language', newLang);
+            setLanguage(newLang);
+        }
+
+        function setLanguage(lang) {
+            const translations = {
+                en: {
+                    title: "ViewTube",
+                    loadButton: "Load Video",
+                    copyButton: "Copy Link",
+                    themeToggle: "Switch Theme",
+                    dataUriButton: "Generate Data URI",
+                    languageToggle: "Switch Language"
+                },
+                jp: {
+                    title: "ビューチューブ",
+                    loadButton: "ビデオを読み込む",
+                    copyButton: "リンクをコピー",
+                    themeToggle: "テーマを切り替え",
+                    dataUriButton: "データURIを生成",
+                    languageToggle: "言語を切り替え"
+                }
+            };
+            
+            const translation = translations[lang];
+            document.getElementById('title').textContent = translation.title;
+            document.getElementById('loadButton').textContent = translation.loadButton;
+            document.getElementById('copyButton').textContent = translation.copyButton;
+            document.getElementById('themeToggle').textContent = translation.themeToggle;
+            document.getElementById('dataUriButton').textContent = translation.dataUriButton;
+            document.getElementById('languageToggle').textContent = translation.languageToggle;
+        }
     </script>
-
-
-</body></html>
+</body>
+</html>
