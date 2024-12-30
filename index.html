@@ -62,7 +62,6 @@
             color: #fff;
         }
 
-        /* Dark Mode Specific Styling */
         body.dark-mode {
             background-color: #333;
             color: #fff;
@@ -72,7 +71,6 @@
             background-color: #444;
         }
 
-        /* Specific styles for h1 in both light and dark modes */
         h1 {
             color: #333;
         }
@@ -92,7 +90,6 @@
         <iframe id="videoFrame" src="" allowfullscreen></iframe>
         <button onclick="copyLink()" id="copyButton">Copy Link</button>
         <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">Switch Theme</button>
-        <button onclick="generateDataURI()" id="dataUriButton">Generate Data URI</button>
         <button class="language-toggle" onclick="toggleLanguage()" id="languageToggle">Switch Language</button>
     </div>
 
@@ -151,19 +148,6 @@
                 body.classList.remove('dark-mode');
                 container.classList.remove('dark-mode');
             }
-        }
-
-        function generateDataURI() {
-            const html = document.documentElement.outerHTML;
-            const dataURI = `data:text/html,${encodeURIComponent(html)}`;
-            const a = document.createElement('a');
-            a.href = dataURI;
-            a.download = 'YouTubeViewer.html';
-            a.textContent = 'Download the Data URI';
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
 
         function toggleLanguage() {
