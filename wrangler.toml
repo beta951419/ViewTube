@@ -1,6 +1,0 @@
-name = "viewtube"
-type = "javascript"
-
-[build]
-command = "echo 'No build command'"
-directory = "."
