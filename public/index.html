@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewTube</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">ViewTube</h1>
+        <div class="input-group">
+            <input type="text" id="youtubeLink" placeholder="Paste YouTube link here...">
+            <button onclick="loadVideo()" id="loadButton">Load Video</button>
+        </div>
+        <iframe id="videoFrame" src="" allowfullscreen></iframe>
+        <button onclick="copyLink()" id="copyButton">Copy Link</button>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">Switch Theme</button>
+        <button class="language-toggle" onclick="toggleLanguage()" id="languageToggle">Switch Language</button>
+        <button onclick="downloadVideo()" id="downloadButton">Download Video</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
